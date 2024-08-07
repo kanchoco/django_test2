@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Charts with CSV Data</title>
+    <!-- Load the Google Charts library -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Load the PapaParse library for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script type="text/javascript">
+        // Load the Google Charts library and the 'corechart' package
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            // Fetch the CSV file
+            Papa.parse('D:/240701 KAIT/LAB/WK3/django_test/mytestsite/catalog/templates/data.csv', {
+                download: true,
+                header: true,
+                complete: function (results) {
+                    // Convert CSV data to Google Charts DataTable format
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Year');
+                    data.addColumn('number', 'Sales');
+
+                    results.data.forEach(function (row) {
+                        data.addRow([row.Year, parseFloat(row.Sales)]);
+                    });
+
+                    // Set chart options
+                    var options = {
+                        title: 'Company Performance',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+
+                    // Instantiate and draw the chart
+                    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+                    chart.draw(data, options);
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Google Charts with CSV Data</h1>
+    <!-- Create a div where the chart will be rendered -->
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+</body>
+
+</html>
